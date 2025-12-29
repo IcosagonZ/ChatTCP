@@ -269,7 +269,7 @@ int main()
 
                 server_write(message);
 
-                if(message=="EXIT")
+                if(strcmp(message,"EXIT")==0)
                 {
 
                     printf("Exiting...\n");
@@ -284,7 +284,7 @@ int main()
                 strcpy(message, server_read());
                 printf("Reply: %s\n", message);
 
-                if(message=="EXIT")
+                if(strcmp(message,"EXIT")==0)
                 {
                     printf("Client requested close");
                     server_close();
@@ -315,7 +315,7 @@ int main()
                 strcpy(message, client_read());
                 printf("Reply: %s\n", message);
 
-                if(message=="EXIT")
+                if(strcmp(message,"EXIT")==0)
                 {
                     printf("Server requested close\n");
                     client_close();
@@ -334,7 +334,7 @@ int main()
 
                 client_write(message);
 
-                if(message=="EXIT")
+                if(strcmp(message,"EXIT")==0)
                 {
 
                     printf("Exiting...\n");
