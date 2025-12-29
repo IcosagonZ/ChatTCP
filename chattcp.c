@@ -232,29 +232,66 @@ int main()
     int choice;
     scanf("%d", &choice);
 
+    // clear newline
     int c;
     while ((c=getchar()!='\n' && c!= EOF));
+    print("\n");
 
+    printf("Enter port number: ");
+    int user_port;
+    scanf("%d", &user_port);
+
+    // clear newline
+    while ((c=getchar()!='\n' && c!= EOF));
     print("\n");
 
     char message[max_char];
+
+    print("\nEnter EXIT to close program\n\n");
 
     if(choice==0)
     {
         printf("Starting server...\n");
 
-        server_set_port(8000);
+        server_set_port(user_port);
         int server_error = server_init();
 
         if(server_error==0) // If success
         {
-            printf("You: ");
-            fgets(message, sizeof(message), stdin);
-            message[strcspn(message, "\n")] = '\0';
-            server_write(message);
+            while(1==1)
+            {
+                // Send message
+                bzero(message, sizeof(message)); // clear buffer
+                printf("You: ");
 
-            server_close();
-            printf("Done!\n");
+                fgets(message, sizeof(message), stdin);
+                message[strcspn(message, "\n")] = '\0';
+
+                server_write(message);
+
+                if(message=="EXIT")
+                {
+
+                    printf("Exiting...\n");
+                    server_close();
+                    printf("Server closed!\n");
+                    break;
+                }
+
+                // Wait for reply
+                bzero(message, sizeof(message)); // clear buffer
+
+                strcpy(message, server_read());
+                printf("Reply: %s\n", message);
+
+                if(message=="EXIT")
+                {
+                    printf("Client requested close");
+                    server_close();
+                    printf("Server closed!\n");
+                    break;
+                }
+            }
         }
         else // Error occured
         {
@@ -265,17 +302,47 @@ int main()
     else if(choice==1)
     {
         client_set_ip("127.0.0.1");
-        client_set_port(8000);
+        client_set_port(user_port);
 
         int client_error = client_init();
         if(client_error==0) // If success
         {
-            strcpy(message, client_read());
-            printf("Reply: %s", message);
+            while(1==1)
+            {
+                // Receive message
+                bzero(message, sizeof(message)); // clear buffer
 
-            client_close();
+                strcpy(message, client_read());
+                printf("Reply: %s\n", message);
 
-            printf("Done!\n");
+                if(message=="EXIT")
+                {
+                    printf("Server requested close\n");
+                    client_close();
+                    printf("Client closed!\n");
+                    break;
+                }
+
+                bzero(message, sizeof(message)); // clear buffer
+
+                // Send message
+                bzero(message, sizeof(message)); // clear buffer
+                printf("You: ");
+
+                fgets(message, sizeof(message), stdin);
+                message[strcspn(message, "\n")] = '\0';
+
+                client_write(message);
+
+                if(message=="EXIT")
+                {
+
+                    printf("Exiting...\n");
+                    client_close();
+                    printf("Client closed!\n");
+                    break;
+                }
+            }
         }
         else // Error occured
         {
