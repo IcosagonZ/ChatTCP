@@ -67,7 +67,7 @@ void client_write(char _lan_buffer[max_char])
 {
     bzero(client_buffer, sizeof(client_buffer));
     strcpy(client_buffer, _lan_buffer);
-    write(client_connfd, client_buffer, sizeof(client_buffer));
+    write(client_connfd, client_buffer, strlen(client_buffer));
 }
 // Read data from socket
 char *client_read()
@@ -111,15 +111,6 @@ int client_init()
             return 0;
         }
     }
-}
-
-// Get server hostname
-char *get_server_hostname()
-{
-    client_write("0x000001");
-    hostname = client_read();
-    hostname = strtok(hostname, "\n");
-    return hostname;
 }
 
 // Close client socket
@@ -206,7 +197,7 @@ void server_write(char _lan_buffer[max_char])
 {
     bzero(lan_buffer, sizeof(lan_buffer));
     strcpy(lan_buffer, _lan_buffer);
-    write(connfd, lan_buffer, sizeof(lan_buffer));
+    write(connfd, lan_buffer, strlen(lan_buffer));
 }
 // Read data from socket
 char *server_read()
@@ -287,7 +278,7 @@ int main()
 
                 if(strcmp(message,"EXIT")==0)
                 {
-                    printf("Client requested close");
+                    printf("Client requested close\n");
                     server_close();
                     printf("Server closed!\n");
                     break;
