@@ -232,7 +232,12 @@ int main()
     int choice;
     scanf("%d", &choice);
 
+    int c;
+    while ((c=getchar()!='\n' && c!= EOF));
+
     print("\n");
+
+    char message[max_char];
 
     if(choice==0)
     {
@@ -243,11 +248,11 @@ int main()
 
         if(server_error==0) // If success
         {
-            //char message;
+            printf("You: ");
+            fgets(message, sizeof(message), stdin);
+            message[strcspn(message, "\n")] = '\0';
+            server_write(message);
 
-            //printf("You: ");
-
-            server_write("Hello world\n");
             server_close();
             printf("Done!\n");
         }
@@ -265,8 +270,11 @@ int main()
         int client_error = client_init();
         if(client_error==0) // If success
         {
-            client_write("Hello world\n");
+            strcpy(message, client_read());
+            printf("Reply: %s", message);
+
             client_close();
+
             printf("Done!\n");
         }
         else // Error occured
