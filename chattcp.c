@@ -85,7 +85,7 @@ int client_init()
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if(sockfd==-1)
     {
-        print("LC001\n");
+        print("Socket creation failed\n");
         return 1;
     }
     else
@@ -101,7 +101,7 @@ int client_init()
 
         if(connect(sockfd, (SA*)&servaddr, sizeof(servaddr))!=0)
         {
-            print("LC002\n");
+            print("Socket connect failed\n");
             return 2;
         }
         else
@@ -151,7 +151,7 @@ int server_init()
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if(sockfd==-1)
     {
-        print("LS001\n");
+        print("Socket creation failed\n");
         return 1;
     }
     else
@@ -167,7 +167,7 @@ int server_init()
         // Bind socket
         if((bind(sockfd, (SA*)&servaddr, sizeof(servaddr)))!=0)
         {
-            print("LS002\n");
+            print("Socket bind failed\n");
             return 1;
         }
         else
@@ -176,7 +176,7 @@ int server_init()
 
             if((listen(sockfd, 5))!=0)
             {
-                print("LS003\n");
+                print("Socket listen failed\n");
                 return 1;
             }
             else
@@ -188,7 +188,7 @@ int server_init()
                 connfd = accept(sockfd, (SA*)&cli, &len);
                 if(connfd<0)
                 {
-                    print("LS004\n");
+                    print("Socket accept failed\n");
                     return 1;
                 }
                 else
@@ -258,6 +258,7 @@ int main()
 
         if(server_error==0) // If success
         {
+            // Server chat loop
             while(1==1)
             {
                 // Send message
@@ -307,6 +308,7 @@ int main()
         int client_error = client_init();
         if(client_error==0) // If success
         {
+            // Client chat loop
             while(1==1)
             {
                 // Receive message
